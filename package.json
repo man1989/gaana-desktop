@@ -5,7 +5,8 @@
     "start": "electron ."
   },
   "dependencies": {
-    "electron": "^3.0.0"
+    "electron": "^2.0.10",
+    "electron-media-service": "^0.2.2"
   },
   "main": "app.js"
 }
