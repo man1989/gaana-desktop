@@ -1,0 +1,11 @@
+{
+  "name": "gaana-desktop",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^3.0.0"
+  },
+  "main": "app.js"
+}
