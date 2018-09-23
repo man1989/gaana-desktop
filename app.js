@@ -1,7 +1,7 @@
 const MediaService = require("electron-media-service");
+const Player = require("./util/Player");
 const { app, BrowserWindow, globalShortcut } = require("electron");
 const mediaService = new MediaService();
-
 function createWindow() {
     let window = new BrowserWindow({
         height: 600, width: 1000, webPreferences: {
@@ -14,39 +14,34 @@ function createWindow() {
     window.loadURL("https://www.gaana.com/");
     // window.webContents.openDevTools();
     window.webContents.on("dom-ready", ()=>{
-        let adsContainer = `document.querySelector('.add_block')`;
-        window.webContents.executeJavaScript(`console.log(${adsContainer})`)
-        window.webContents.executeJavaScript(`${adsContainer}.parentNode.removeChild(${adsContainer})`);
+        Player.removeAds(window.webContents);
     });
-    window.on("keypress", (a, b, c)=>{
-        console.log(a, b,c);
-    });
-    // window.webContents.on('new-window', (event, url) => {
-    //     event.preventDefault()
-    //     const win = new BrowserWindow({ show: false })
-    //     win.once('ready-to-show', () => win.show())
-    //     win.loadURL(url)
-    //     event.newGuest = win
-    // });
     return window;
 }
 
 app.on("ready", () => {
     let window = createWindow();
+    let player = new Player(window.webContents);
     mediaService.startService();
     mediaService.on("play", ()=>{
-        window.webContents.executeJavaScript(`document.querySelector('.play-song.playPause').click()`);
+        player.playPause();
     });
     mediaService.on("pause", ()=>{
-        window.webContents.executeJavaScript(`document.querySelector('.play-song.playPause').click()`);
+        player.playPause();
     });
     mediaService.on("playPause", ()=>{
-        window.webContents.executeJavaScript(`document.querySelector('.play-song.playPause').click()`);
+        player.playPause();
     });
     mediaService.on("previous", ()=>{
-        window.webContents.executeJavaScript(`document.querySelector('.prev-song').click()`);
+        player.previous();
     });
     mediaService.on("next", ()=>{
-        window.webContents.executeJavaScript(`document.querySelector('.next-song').click()`);
+        player.next();
     });
 });
+
+process.on("uncaughtException", (err)=>{
+    console.error("uncaught exception: ", err);
+    process.exit(0);
+})
+
